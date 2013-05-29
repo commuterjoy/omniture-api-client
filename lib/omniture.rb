@@ -8,7 +8,7 @@ require 'erb'
 
 class Omniture
    
-    attr_accessor :username, :password, :nonce, :nonce_base64, :created, :pd, :auth, :curl, :api
+    attr_accessor :username, :password, :nonce, :nonce_base64, :created, :pd, :auth, :api
     
     def get_credentials
        JSON.parse(IO.read("#{Etc.getpwuid.dir}/.omniture"))
