@@ -1,0 +1,31 @@
+{
+	"reportDescription":{
+		"reportSuiteID":"guardiangu-frontend",
+		"date":"2013-05-28",
+		"dateFrom":"",
+		"dateTo":"",
+		"dateGranularity":"hour",
+		"metrics":[
+			{
+				"id":"event37"
+			}
+		],
+		"sortBy":"",
+		"elements":[
+			{
+				"id":"evar37",
+				"search":{
+					"type":"OR",
+					"keywords":[
+						"social-fb",
+						"social-twitter",
+						"social-gplus"
+					]
+				}
+			}
+		],
+		"locale":"",
+		"segment_id":"First_Time_Visitors"
+	},
+	"validate":true
+}

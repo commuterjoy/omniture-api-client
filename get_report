@@ -1,0 +1,11 @@
+
+require 'lib/omniture'
+
+# ------
+
+report_id = ARGV.first
+
+report = Report.new().getReport(report_id)
+response = `#{report}`
+
+File.open('reports/'+report_id, 'w') {|f| f.write(response) }
