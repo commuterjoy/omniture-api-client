@@ -1,9 +1,13 @@
 
 require 'lib/omniture'
+require 'date'
 
 # ------
 
-report = Report.new().queueTrended
+yesterday = (Date.today-1).strftime('%Y-%m-%d') 
+four_week_ago = (Date.today-29).strftime('%Y-%m-%d') 
+
+report = Report.new().queueTrended(yesterday, four_week_ago)
 
 response = `#{report}`
 

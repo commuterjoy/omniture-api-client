@@ -4,6 +4,7 @@ require 'digest/sha1'
 require 'base64'
 require 'json'
 require 'etc'
+require 'erb'
 
 class Omniture
    
@@ -28,10 +29,14 @@ class Omniture
 end
 
 class Report < Omniture
-    
-    def queueTrended
+
+    def queueTrended(to, from)
+        @to = to
+        @from = from 
         method = 'Report.QueueTrended'
-        "curl -sH 'Content-Type: application/json' -H 'X-WSSE: %s' -d @templates/trended %s" % [@auth, (@api % [method])]
+        template = ERB.new File.new("templates/trended").read, nil, "%"
+        t = template.result(binding)
+        "curl -sH 'Content-Type: application/json' -H 'X-WSSE: %s' -d '%s' %s" % [@auth, t, (@api % [method])]
     end
 
     def getReportQueue

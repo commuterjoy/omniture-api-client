@@ -1,10 +1,10 @@
 {
 	"reportDescription":{
 		"reportSuiteID":"guardiangu-frontend",
-		"date":"2013-05-28",
-		"dateFrom":"",
-		"dateTo":"",
-		"dateGranularity":"hour",
+		"date":"",
+		"dateFrom":"<%= @from %>",
+		"dateTo":"<%= @to %>",
+		"dateGranularity":"day",
 		"metrics":[
 			{
 				"id":"event37"
@@ -17,15 +17,15 @@
 				"search":{
 					"type":"OR",
 					"keywords":[
-						"social-fb",
-						"social-twitter",
-						"social-gplus"
+						"Article:social-fb",
+						"Article:social-twitter",
+						"Article:social-gplus"
 					]
 				}
 			}
 		],
 		"locale":"",
-		"segment_id":"First_Time_Visitors"
+		"segment_id":""
 	},
 	"validate":true
 }
