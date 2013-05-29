@@ -4,7 +4,7 @@
 		"date":"",
 		"dateFrom":"<%= @from %>",
 		"dateTo":"<%= @to %>",
-		"dateGranularity":"day",
+		"dateGranularity":"hour",
 		"metrics":[
 			{
 				"id":"event37"
@@ -16,16 +16,12 @@
 				"id":"evar37",
 				"search":{
 					"type":"OR",
-					"keywords":[
-						"Article:social-fb",
-						"Article:social-twitter",
-						"Article:social-gplus"
-					]
+					"keywords": [<%= @evars.map{|a|'"'+a+'"'}.join(",") %>]
 				}
 			}
 		],
 		"locale":"",
-		"segment_id":""
+		"segment_id":"<%= @segment %>"
 	},
 	"validate":true
 }
