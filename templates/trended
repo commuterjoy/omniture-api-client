@@ -16,7 +16,7 @@
 				"id":"evar37",
 				"search":{
 					"type":"OR",
-					"keywords": [<%= @evars.map{|a|'"'+a+'"'}.join(",") %>]
+					"keywords": [<%= @evars.map{|var|'"'+var+'"'}.join(",") %>]
 				}
 			}
 		],

@@ -1,0 +1,14 @@
+{
+	"reportDescription":{
+		"reportSuiteID":"guardiangu-frontend",
+		"date":"<%= @date %>",
+		"dateGranularity":"hour",
+		"metrics":[
+            <%= @metrics.map{ |metric| '{"id":"'+metric+'"}' }.join(",")  %>
+		],
+		"sortBy":"",
+		"locale":"",
+		"segment_id":""
+	},
+	"validate":true
+}

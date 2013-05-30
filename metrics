@@ -1,0 +1,34 @@
+
+require 'lib/omniture'
+require 'date'
+
+# ------
+
+yesterday = (Date.today-1).strftime('%Y-%m-%d') 
+
+opts = {
+         :date => yesterday,
+         :metrics => ['pageViews', 'visits', 'visitors']
+       }
+
+report = Report.new().queueQueueOvertime(opts)
+
+response = `#{report}`
+
+puts response 
+
+report_id = JSON.parse(response)['reportID']
+
+# Site visit metrics
+#    visits
+#    totalVisits
+#    averageTimeSpentOnSite
+#    averageVisitDepth
+
+# Site visitor metrics
+#    visitors
+#    visitorsNew
+
+# Page view metrics
+#    pageViews
+#    totalPageViews

@@ -30,6 +30,16 @@ end
 
 class Report < Omniture
 
+    def queueQueueOvertime(opts)
+        @date = opts[:date]
+        @metrics = opts[:metrics]
+        method = 'Report.QueueOvertime'
+        template = ERB.new File.new("templates/metrics").read, nil, "%"
+        t = template.result(binding)
+        "curl -sH 'Content-Type: application/json' -H 'X-WSSE: %s' -d '%s' %s" % [@auth, t, (@api % [method])]
+
+    end
+
     def queueTrended(opts)
         @to = opts[:to]
         @from = opts[:from]
