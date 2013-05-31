@@ -5,6 +5,7 @@ require 'base64'
 require 'json'
 require 'etc'
 require 'erb'
+require 'httparty'
 
 class Omniture
    
@@ -23,9 +24,14 @@ class Omniture
         @created       = Time.now.utc.iso8601
         @pd            = [Digest::SHA1.digest(nonce + created + password)].pack("m").chomp
         @auth          = 'UsernameToken Username="%s", PasswordDigest="%s", Nonce="%s", Created="%s"' % [username, pd, nonce_base64, created]
-        @api           = '"https://api.omniture.com/admin/1.3/rest/?method=%s"'
+        @api           = 'https://api.omniture.com/admin/1.3/rest/'
     end
 
+    def get(method)
+        response = HTTParty.get(@api, :query => { "method" => method }, :headers => {"Content-Type" => 'application/json', "X-WSSE" => @auth })
+        response.body
+    end
+    
 end
 
 class Report < Omniture
@@ -48,8 +54,7 @@ class Report < Omniture
     end
 
     def getReportQueue
-        method = 'Report.GetReportQueue'
-        "curl -sH 'Content-Type: application/json' -H 'X-WSSE: %s' %s" % [@auth, (@api % [method])]
+        self.get('Report.GetReportQueue')
     end
 
     def getReport(id)

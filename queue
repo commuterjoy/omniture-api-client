@@ -5,9 +5,7 @@ require 'lib/omniture'
 
 report = Report.new().getReportQueue()
 
-response = `#{report}`
-
-queue = JSON.parse(response)
+queue = JSON.parse(report)
 
 puts "Queue size: #{queue.size}"
 
