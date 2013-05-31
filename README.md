@@ -12,7 +12,13 @@ You'll need a Omniture username and secret putting in `~/.omniture`
 }
 ```
 
-Then request a report to be generated, 
+Then make sure you've got all the ruby packages,
+
+```
+bundle install
+```
+
+Then request an Omniture report to be generated,
 
 ```
 ruby clickstream -d "Gallery:swipe" 
