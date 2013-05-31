@@ -1,0 +1,11 @@
+
+require 'rubygems'
+require 'json'
+
+JSON.parse(STDIN.read)['report']['data'].each { |a|
+    puts "#{a['name']}, #{a['counts'].first}"
+    a['breakdown'].map { |d|
+        puts "#{d['name']} #{d['hour']} \t #{d['counts'].first}"
+    }
+}
+
