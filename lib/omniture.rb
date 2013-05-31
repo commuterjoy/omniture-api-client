@@ -6,6 +6,7 @@ require 'json'
 require 'etc'
 require 'erb'
 require 'httparty'
+require 'util/fixnum'
 
 class Omniture
    
