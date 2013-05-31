@@ -42,15 +42,24 @@ ruby get_report 143806103; cat reports/143806103
 
 ## Clickstream
 
+The responsive Guardian site uses the Navigation Interaction Type property (v37) to capture clicks and other user interface events. 
+
+You can generate a clickstream report for this data like so,
+
 ```
 ruby clickstream -d "Gallery:swipe"
 ```
+
+Likewise, to generate a report for multiple properties you can comma separate the values,
 
 ```
 ruby clickstream -d "social-fb,social-gplus,social-twitter"
 ```
 
 ## Author 
+
+Ultimately you can generate a report for any page, tag, section and so on. For demonstrative purposes I've included a command-line tool to generate
+data about any give author.
 
 ```
 ruby author -d "Charlie Brooker"
@@ -92,5 +101,3 @@ Thu.  2 May 2013 6   4049
 # Notes
 
 - Omniture's REST API is authenticated by the SOAP [WS-Security standard](http://en.wikipedia.org/wiki/WS-Security)
-
-
