@@ -71,6 +71,14 @@ data about any give author.
 ruby author -d "Charlie Brooker"
 ```
 
+## KPIs
+
+A standard report containing pageViews, visits, visitors, averageTimeSpentOnSite, averageVisitDepth, visitorsNew can be generated,
+
+```
+ruby kpis
+```
+
 # Queue
 
 When you request a report Omniture adds it to a job queue.

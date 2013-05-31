@@ -3,9 +3,11 @@ require 'rubygems'
 require 'json'
 
 JSON.parse(STDIN.read)['report']['data'].each { |a|
-    puts "#{a['name']}, #{a['counts'].first}"
-    a['breakdown'].map { |d|
-        puts "#{d['name']} #{d['hour']} \t #{d['counts'].first}"
-    }
+    puts "#{a['name']}\t" + a['counts'].map{|c| c }.join("\t")
+    if (a['breakdown']) 
+        a['breakdown'].map { |d|
+            puts "#{d['name']} #{d['hour']} \t #{d['counts'].first}"
+        }
+    end
 }
 
