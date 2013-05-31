@@ -2,7 +2,6 @@
 
 require 'rubygems'
 require 'sinatra'
-require 'lib/omniture.rb'
 
 before do
     content_type 'application/json'
