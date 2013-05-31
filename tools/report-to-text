@@ -1,12 +1,15 @@
 
 require 'rubygems'
 require 'json'
+require 'date'
 
 JSON.parse(STDIN.read)['report']['data'].each { |a|
     puts "#{a['name']}\t" + a['counts'].map{|c| c }.join("\t")
     if (a['breakdown']) 
         a['breakdown'].map { |d|
-            puts "#{d['name']} #{d['hour']} \t #{d['counts'].first}"
+            date = Date.parse(d['name'])
+            time = "%02d" % d['hour']
+            puts "#{date}T#{time}:00:00Z \t #{d['counts'].first}"
         }
     end
 }
