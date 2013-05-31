@@ -102,13 +102,15 @@ ruby tools/report-to-text < reports/144084986
 Yields,
 
 ```
-Thu.  2 May 2013 0   4437 
-Thu.  2 May 2013 1   2594  <-- 2,594 instances of this metric at 1am, 2 May
-Thu.  2 May 2013 2   2462
-Thu.  2 May 2013 3   2713
-Thu.  2 May 2013 4   2667
-Thu.  2 May 2013 5   2420
-Thu.  2 May 2013 6   4049
+2013-05-02T00:00:00Z     63
+2013-05-02T01:00:00Z     30  <-- 30 instances of this metric at 1am, 2 May
+2013-05-02T02:00:00Z     41
+2013-05-02T03:00:00Z     32
+2013-05-02T04:00:00Z     26
+2013-05-02T05:00:00Z     16
+2013-05-02T06:00:00Z     43
+2013-05-02T07:00:00Z     65
+2013-05-02T08:00:00Z     59
 ...
 ```
 
