@@ -6,6 +6,7 @@ GEM
     json (1.7.5)
     multi_json (1.5.0)
     multi_xml (0.5.3)
+    trollop (2.0)
 
 PLATFORMS
   ruby
@@ -13,3 +14,4 @@ PLATFORMS
 DEPENDENCIES
   httparty
   json
+  trollop
