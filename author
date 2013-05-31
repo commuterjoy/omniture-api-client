@@ -24,9 +24,5 @@ opts = {
 
 report = Report.new().queueTrended(opts)
 
-response = `#{report}`
-
-puts response 
-
-report_id = JSON.parse(response)['reportID']
+puts report
 

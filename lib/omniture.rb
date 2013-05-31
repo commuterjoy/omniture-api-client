@@ -32,25 +32,27 @@ class Omniture
         response.body
     end
     
+    def post(method, body)
+        response = HTTParty.post(@api, :body => body, :query => { "method" => method }, :headers => {"Content-Type" => 'application/json', "X-WSSE" => @auth })
+        response.body
+    end
+    
 end
 
 class Report < Omniture
 
     def queueQueueOvertime(opts)
         @opts = opts
-        method = 'Report.QueueOvertime'
         template = ERB.new File.new("templates/metrics").read, nil, "%"
-        t = template.result(binding)
-        "curl -sH 'Content-Type: application/json' -H 'X-WSSE: %s' -d '%s' %s" % [@auth, t, (@api % [method])]
-
+        body = template.result(binding)
+        self.post('Report.QueueOvertime', body)
     end
 
     def queueTrended(opts)
         @opts = opts
-        method = 'Report.QueueTrended'
         template = ERB.new File.new("templates/trended").read, nil, "%"
-        t = template.result(binding)
-        "curl -sH 'Content-Type: application/json' -H 'X-WSSE: %s' -d '%s' %s" % [@auth, t, (@api % [method])]
+        body = template.result(binding)
+        self.post('Report.QueueTrended', body)
     end
 
     def getReportQueue
@@ -58,8 +60,8 @@ class Report < Omniture
     end
 
     def getReport(id)
-        method = 'Report.GetReport'
-        "curl -sH 'Content-Type: application/json' -H 'X-WSSE: %s' -d '{\"reportID\":\"%s\"}' %s" % [@auth, id, (@api % [method])]
+        body = '{ "reportID" : "%s" }' % [id]
+        self.post('Report.GetReport', body)
     end
 
 end
