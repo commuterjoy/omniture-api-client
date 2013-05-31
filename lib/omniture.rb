@@ -14,7 +14,7 @@ class Omniture
     
     def get_credentials
        if (ENV['OMNITURE_USER'])
-            { "username" => ENV['OMNITURE_USER'], "secret" => ENV['OMNITURE_SECRET'] } 
+            { "user" => ENV['OMNITURE_USER'].chomp, "secret" => ENV['OMNITURE_SECRET'].chomp } 
        else
             JSON.parse(IO.read("#{Etc.getpwuid.dir}/.omniture"))
        end
@@ -24,6 +24,10 @@ class Omniture
         credentials = self.get_credentials 
         @username      = credentials['user']
         @password      = credentials['secret']
+
+        puts @username
+        puts @password
+        
         @nonce         = Array.new(10){ rand(0x100000000) }.pack('I*')
         @nonce_base64  = [nonce].pack("m").chomp
         @created       = Time.now.utc.iso8601
