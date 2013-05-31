@@ -21,7 +21,7 @@ bundle install
 Then request an Omniture report to be generated,
 
 ```
-ruby clickstream -d "Gallery:swipe" 
+./clickstream -d "Gallery:swipe" 
 ```
 
 And you should see the _report id_ in the response,
@@ -35,13 +35,13 @@ And you should see the _report id_ in the response,
 First check the queue,
 
 ```
-ruby queue 
+./queue 
 ```
 
 Then once your job has been completed you can fetch it,
 
 ```
-ruby get_report 143806103; cat reports/143806103 
+./get_report 143806103; cat reports/143806103 
 ```
 
 # Reports 
@@ -53,13 +53,13 @@ The responsive Guardian site uses the Navigation Interaction Type property (v37)
 You can generate a clickstream report for this data like so,
 
 ```
-ruby clickstream -d "Gallery:swipe"
+./clickstream -d "Gallery:swipe"
 ```
 
 Likewise, to generate a report for multiple properties you can comma separate the values,
 
 ```
-ruby clickstream -d "social-fb,social-gplus,social-twitter"
+./clickstream -d "social-fb,social-gplus,social-twitter"
 ```
 
 ## Author 
@@ -68,7 +68,7 @@ Ultimately you can generate a report for any page, tag, section and so on. For d
 data about any give author.
 
 ```
-ruby author -d "Charlie Brooker"
+./author -d "Charlie Brooker"
 ```
 
 ## KPIs
@@ -76,7 +76,7 @@ ruby author -d "Charlie Brooker"
 A standard report containing pageViews, visits, visitors, averageTimeSpentOnSite, averageVisitDepth, visitorsNew can be generated,
 
 ```
-ruby kpis
+./kpis
 ```
 
 # Queue
@@ -86,7 +86,7 @@ When you request a report Omniture adds it to a job queue.
 You can view the queue with the _queue_ command,
 
 ```
-ruby queue
+./queue
 ```
 
 # Reports
@@ -96,7 +96,7 @@ I've included a rudimentary tool to extract data from the Omniture reports,
 So,
 
 ```
-ruby tools/report-to-text < reports/144084986
+./tools/report-to-text < reports/144084986
 ```
 
 Yields,
