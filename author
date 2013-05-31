@@ -1,6 +1,13 @@
 
 require 'lib/omniture'
 require 'date'
+require 'trollop'
+
+# ----
+
+args = Trollop::options do
+    opt :byline, "Byline", :type => :string        # string --name <s>, default nil
+end
 
 # ------
 
@@ -10,8 +17,9 @@ four_week_ago = (Date.today-29).strftime('%Y-%m-%d')
 opts = {
          :from => four_week_ago,
          :to => yesterday,
-         :segment => "",
-         :evars => ["Article:social-fb", "Article:social-twitter", "Article:social-gplus"] 
+         :evars => [args[:byline]],
+         :metric => "pageViews",
+         :element_id => "prop6"
        }
 
 report = Report.new().queueTrended(opts)

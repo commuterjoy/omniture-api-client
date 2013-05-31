@@ -2,26 +2,26 @@
 	"reportDescription":{
 		"reportSuiteID":"guardiangu-frontend",
 		"date":"",
-		"dateFrom":"<%= @from %>",
-		"dateTo":"<%= @to %>",
+		"dateFrom":"<%= @opts[:from] %>",
+		"dateTo":"<%= @opts[:to] %>",
 		"dateGranularity":"hour",
 		"metrics":[
 			{
-				"id":"event37"
+				"id":"<%= opts[:metric] %>"
 			}
 		],
 		"sortBy":"",
 		"elements":[
 			{
-				"id":"evar37",
+				"id":"<%= opts[:element_id] %>",
 				"search":{
 					"type":"OR",
-					"keywords": [<%= @evars.map{|var|'"'+var+'"'}.join(",") %>]
+					"keywords": [<%= @opts[:evars].map{|var|'"'+var+'"'}.join(",") %>]
 				}
 			}
 		],
 		"locale":"",
-		"segment_id":"<%= @segment %>"
+		"segment_id":"<%= @opts[:segment] %>"
 	},
 	"validate":true
 }

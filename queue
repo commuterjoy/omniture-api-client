@@ -7,6 +7,10 @@ report = Report.new().getReportQueue()
 
 response = `#{report}`
 
-JSON.parse(response).map { |item|
+queue = JSON.parse(response)
+
+puts "Queue size: #{queue.size}"
+
+queue.map { |item|
     puts item.inspect
 }

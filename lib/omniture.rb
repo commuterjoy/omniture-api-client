@@ -31,8 +31,7 @@ end
 class Report < Omniture
 
     def queueQueueOvertime(opts)
-        @date = opts[:date]
-        @metrics = opts[:metrics]
+        @opts = opts
         method = 'Report.QueueOvertime'
         template = ERB.new File.new("templates/metrics").read, nil, "%"
         t = template.result(binding)
@@ -41,10 +40,7 @@ class Report < Omniture
     end
 
     def queueTrended(opts)
-        @to = opts[:to]
-        @from = opts[:from]
-        @segment = opts[:segment]
-        @evars = opts[:evars]
+        @opts = opts
         method = 'Report.QueueTrended'
         template = ERB.new File.new("templates/trended").read, nil, "%"
         t = template.result(binding)
