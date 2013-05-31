@@ -1,5 +1,8 @@
 #!/usr/bin/ruby 
 
+require 'rubygems'
+require 'sinatra'
+
 class OmnitureServer < Sinatra::Base
 
     before do
@@ -7,7 +10,7 @@ class OmnitureServer < Sinatra::Base
     end
 
     get '/test' do
-        "{[]}"
+        "1"
     end
 
     get '/report/:id' do
