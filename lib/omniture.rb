@@ -13,7 +13,11 @@ class Omniture
     attr_accessor :username, :password, :nonce, :nonce_base64, :created, :pd, :auth, :api
     
     def get_credentials
-       JSON.parse(IO.read("#{Etc.getpwuid.dir}/.omniture"))
+       if (ENV['OMNITURE_USER'])
+            { "username" => ENV['OMNITURE_USER'], "secret" => ENV['OMNITURE_SECRET'] } 
+       else
+            JSON.parse(IO.read("#{Etc.getpwuid.dir}/.omniture"))
+       end
     end
     
     def initialize()
