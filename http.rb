@@ -7,6 +7,10 @@ before do
     content_type 'application/json'
 end
 
+get '/test' do
+    "{[]}"
+end
+
 get '/report/:id' do
     Report.new().getReport(params[:id])
 end
