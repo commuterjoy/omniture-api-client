@@ -9,8 +9,12 @@ class OmnitureServer < Sinatra::Base
         content_type 'application/json'
     end
 
+    get '/' do
+        redirect '/test'
+    end
+
     get '/test' do
-        "1"
+        "{}"
     end
 
     get '/report/:id' do
