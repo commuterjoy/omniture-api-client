@@ -8,22 +8,20 @@ require 'trollop'
 
 args = Trollop::options do
     opt :byline, "Byline", :type => :string        # string --name <s>, default nil
+    opt :from, "From (days)", :type => :int        # string --name <s>, default nil
 end
 
 # ------
 
-yesterday = (Date.today-1).strftime('%Y-%m-%d') 
-four_week_ago = (Date.today-29).strftime('%Y-%m-%d') 
+yesterday = (Date.today - 1).strftime('%Y-%m-%d') 
 
-opts = {
-         :from => four_week_ago,
-         :to => yesterday,
-         :evars => [args[:byline]],
-         :metric => "pageViews",
-         :element_id => "prop6"
-       }
-
-report = Report.new().queueTrended(opts)
-
-puts report
-
+puts Report.new().queueTrended(
+                                {
+                                  :from => (Date.today - args[:from]).strftime('%Y-%m-%d'),
+                                  :to => yesterday,
+                                  :evars => [args[:byline]],
+                                  :metric => "pageViews",
+                                  :element_id => "prop6"
+                                }
+                              )
+        

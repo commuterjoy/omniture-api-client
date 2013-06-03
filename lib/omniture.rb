@@ -39,6 +39,7 @@ class Omniture
     end
     
     def post(method, body)
+        puts @api
         response = HTTParty.post(@api, :body => body, :query => { "method" => method }, :headers => {"Content-Type" => 'application/json', "X-WSSE" => @auth })
         response.body
     end
@@ -47,24 +48,19 @@ end
 
 class Report < Omniture
 
-    attr_accessor :default_opts
-
-    def initialize
-        @default_opts = { :granularity => 'day' }  
+    def generateResponse(template, opts)
+        @opts = { :granularity => 'day' }.merge(opts)
+        puts @opts.inspect
+        template = ERB.new File.new("templates/" + template).read, nil, "%"
+        template.result(binding)
     end
 
     def queueQueueOvertime(opts)
-        @opts = default_opts.merge(opts)
-        template = ERB.new File.new("templates/metrics").read, nil, "%"
-        body = template.result(binding)
-        self.post('Report.QueueOvertime', body)
+        self.post('Report.QueueOvertime', generateResponse('metrics', opts))
     end
 
     def queueTrended(opts)
-        @opts = default_opts.merge(opts)
-        template = ERB.new File.new("templates/trended").read, nil, "%"
-        body = template.result(binding)
-        self.post('Report.QueueTrended', body)
+        self.post('Report.QueueTrended', generateResponse('trended', opts))
     end
 
     def getReportQueue
