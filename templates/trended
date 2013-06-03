@@ -4,7 +4,7 @@
 		"date":"",
 		"dateFrom":"<%= @opts[:from] %>",
 		"dateTo":"<%= @opts[:to] %>",
-		"dateGranularity":"hour",
+		"dateGranularity":"<%= @opts[:granularity] %>",
 		"metrics":[
 			{
 				"id":"<%= opts[:metric] %>"

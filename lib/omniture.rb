@@ -47,15 +47,21 @@ end
 
 class Report < Omniture
 
+    attr_accessor :default_opts
+
+    def initialize
+        @default_opts = { :granularity => 'day' }  
+    end
+
     def queueQueueOvertime(opts)
-        @opts = opts
+        @opts = default_opts.merge(opts)
         template = ERB.new File.new("templates/metrics").read, nil, "%"
         body = template.result(binding)
         self.post('Report.QueueOvertime', body)
     end
 
     def queueTrended(opts)
-        @opts = opts
+        @opts = default_opts.merge(opts)
         template = ERB.new File.new("templates/trended").read, nil, "%"
         body = template.result(binding)
         self.post('Report.QueueTrended', body)
