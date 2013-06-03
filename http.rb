@@ -17,8 +17,17 @@ class OmnitureServer < Sinatra::Base
         "{}"
     end
 
+    get '/kpis/:id' do
+        Report.new().getReport(params[:id]).to_ganglia
+    end
+    
     get '/report/:id' do
         Report.new().getReport(params[:id])
+    end
+
+    get '/report/:id' do
+        report = Report.new().getReport(params[:id])
+        report_as_ganglia(report)
     end
 
     get '/queue' do

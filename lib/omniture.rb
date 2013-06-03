@@ -6,6 +6,8 @@ require 'json'
 require 'etc'
 require 'erb'
 require 'httparty'
+require 'date'
+require 'time'
 
 class Omniture
    
@@ -23,10 +25,6 @@ class Omniture
         credentials = self.get_credentials 
         @username      = credentials['user']
         @password      = credentials['secret']
-
-        puts @username
-        puts @password
-        
         @nonce         = Array.new(10){ rand(0x100000000) }.pack('I*')
         @nonce_base64  = [nonce].pack("m").chomp
         @created       = Time.now.utc.iso8601
@@ -70,6 +68,32 @@ class Report < Omniture
     def getReport(id)
         body = '{ "reportID" : "%s" }' % [id]
         self.post('Report.GetReport', body)
+    end
+
+    def t_ganglia(id)
+        
+        report = JSON.parse(self.getReport(id))
+        
+        metrics = report['report']['metrics'].map{ |metric| {
+                :id => metric['id'],
+                :name => metric['name']
+            }}
+ 
+        kpis = report['report']['data'].map { |kpi|
+           
+            metrics.each_with_index.map { |metric, i|
+                {
+                    "group" => "frontend-omniture-kpis",
+                    "name" => [metric[:id], kpi["name"].gsub(/ /, '_')].join("_"),
+                    "type" => "counter",
+                    "title" => kpi["name"],
+                    "count" => kpi["counts"][i]
+                } 
+           } 
+        }.flatten
+ 
+        { "application" => "frontend", "time" => (Time.now.to_f * 1000.0).to_i, "metrics" => kpis }
+        
     end
 
 end
