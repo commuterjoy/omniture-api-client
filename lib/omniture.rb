@@ -39,7 +39,6 @@ class Omniture
     end
     
     def post(method, body)
-        puts @api
         response = HTTParty.post(@api, :body => body, :query => { "method" => method }, :headers => {"Content-Type" => 'application/json', "X-WSSE" => @auth })
         response.body
     end
@@ -48,9 +47,12 @@ end
 
 class Report < Omniture
 
+    def default_options 
+        { :granularity => 'day' }
+    end
+
     def generateResponse(template, opts)
-        @opts = { :granularity => 'day' }.merge(opts)
-        puts @opts.inspect
+        @opts = self.default_options().merge(opts)
         template = ERB.new File.new("templates/" + template).read, nil, "%"
         template.result(binding)
     end
@@ -72,6 +74,7 @@ class Report < Omniture
         self.post('Report.GetReport', body)
     end
 
+    # attempts to serialise a report to something the ganglia agent can read
     def t_ganglia(id)
         
         report = JSON.parse(self.getReport(id))

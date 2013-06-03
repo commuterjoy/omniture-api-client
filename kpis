@@ -3,8 +3,6 @@
 require 'lib/omniture'
 require 'date'
 
-# ------
-
 yesterday = (Date.today-1).strftime('%Y-%m-%d') 
 
 opts = {
@@ -12,6 +10,4 @@ opts = {
          :metrics => ['pageViews', 'visits', 'visitors', 'averageTimeSpentOnSite', 'averageVisitDepth', 'visitorsNew']
        }
 
-report = Report.new().queueQueueOvertime(opts)
-
-puts report 
+puts Report.new().queueQueueOvertime(opts)

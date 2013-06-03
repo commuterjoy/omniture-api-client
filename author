@@ -4,24 +4,23 @@ require 'lib/omniture'
 require 'date'
 require 'trollop'
 
-# ----
-
-args = Trollop::options do
-    opt :byline, "Byline", :type => :string        # string --name <s>, default nil
-    opt :from, "From (days)", :type => :int        # string --name <s>, default nil
+def days_from_today(n)
+    (Date.today - n).strftime('%Y-%m-%d') 
 end
 
-# ------
+args = Trollop::options do
+    opt :byline, "Byline",      :type => :string
+    opt :from,   "From (days)", :type => :int, :default => 1
+    opt :to,     "To (days)",   :type => :int, :default => 1
+end
 
-yesterday = (Date.today - 1).strftime('%Y-%m-%d') 
+r = Report.new().queueTrended(
+                {
+                  :from => days_from_today(args[:from]),
+                  :to => days_from_today(args[:to]),
+                  :evars => args[:byline].to_a,
+                  :metric => "pageViews",
+                  :element_id => "prop6"
+                })
+puts r
 
-puts Report.new().queueTrended(
-                                {
-                                  :from => (Date.today - args[:from]).strftime('%Y-%m-%d'),
-                                  :to => yesterday,
-                                  :evars => [args[:byline]],
-                                  :metric => "pageViews",
-                                  :element_id => "prop6"
-                                }
-                              )
-        

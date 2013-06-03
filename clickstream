@@ -4,33 +4,25 @@ require 'lib/omniture'
 require 'date'
 require 'trollop'
 
-# ------
-
-args = Trollop::options do
-    opt :data, "data link names", :type => :string        # string --name <s>, default nil
+def days_from_today(n)
+    (Date.today - n).strftime('%Y-%m-%d') 
 end
 
-p args  # a hash: { :monkey=>false, :name=>nil, :num_limbs=>4, :help=>false }
+args = Trollop::options do
+    opt :data, "data link names", :type => :string
+    opt :from,   "From (days)", :type => :int, :default => 30 
+    opt :to,     "To (days)",   :type => :int, :default => 1
+end
 
-# ------
-
-yesterday = (Date.today-1).strftime('%Y-%m-%d') 
-four_week_ago = (Date.today-29).strftime('%Y-%m-%d') 
-
-# :evars => ["Article:social-fb", "Article:social-twitter", "Article:social-gplus"]
-
-opts = {
-         :from => four_week_ago,
-         :to => yesterday,
-         :segment => "",
-         :metric => "event37",
-         :element_id => "evar37",
-         :evars => args[:data].split(",")
-       }
-
-report = Report.new().queueTrended(opts)
+r = Report.new().queueTrended(
+                {
+                  :from => days_from_today(args[:from]),
+                  :to => days_from_today(args[:to]),
+                  :segment => "",
+                  :metric => "event37",
+                  :element_id => "evar37",
+                  :evars => args[:data].split(",")
+                })
 
 puts report
-
-report_id = JSON.parse(report)['reportID']
 
