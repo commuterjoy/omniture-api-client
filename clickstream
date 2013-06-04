@@ -14,7 +14,7 @@ args = Trollop::options do
     opt :to,     "To (days)",   :type => :int, :default => 1
 end
 
-r = Report.new().queueTrended(
+report = Report.new().queueTrended(
                 {
                   :from => days_from_today(args[:from]),
                   :to => days_from_today(args[:to]),
