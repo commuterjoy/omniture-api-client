@@ -3,8 +3,6 @@
 require 'lib/omniture'
 require 'lib/graphite'
 require 'trollop'
-        
-#:api_key => '8664e458-9d62-4c8e-a55b-ad2f46d6e772',
 
 args = Trollop::options do
     opt :report,     "Report id",                                :type => :int
