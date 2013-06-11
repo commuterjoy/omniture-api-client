@@ -75,8 +75,8 @@ class Report < Omniture
         self.post('Report.GetReport', body)
     end
 
-    # attempts to serialise a report to something the ganglia agent can read
-    def to_ganglia(id)
+    # extracts the 'latest' measurements from Omniture, as defined by the _n_ hours argument
+    def to_ganglia(id, hours = 6)
         
         report = JSON.parse(self.getReport(id))
         
@@ -89,21 +89,20 @@ class Report < Omniture
            
             metrics.each_with_index.map { |metric, i|
                 {
-                    "title" => kpi["name"],
-                    "breakdown" => kpi["breakdown"].map { |d|
+                    :title => kpi["name"],
+                    :breakdown => kpi["breakdown"].map { |d|
                         {
-                            :value => d['counts'].first,
+                            :value => d['counts'].first,  # FIXME doesn't work with multiple metrics
                             :time => Time.utc(d['year'], d['month'], d['day'], d['hour']) 
                         }
                     }.select { |d|
-                        six_hours_ago = (Time.now - (60 * 60 * 6))
-                        (six_hours_ago > d[:time])
+                        (Time.now - (60 * 60 * hours) > d[:time])
                     }.last
                 } 
            } 
         }.flatten
  
-        { "application" => "frontend", "time" => (Time.now.to_f * 1000.0).to_i, "metrics" => kpis }
+        { "metrics" => kpis }
         
     end
 

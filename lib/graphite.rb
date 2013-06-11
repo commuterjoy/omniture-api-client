@@ -16,7 +16,7 @@ class Graphite
         conn.puts "#{@api_key}.#{opts[:path]} #{opts[:value]}\n"
         conn.close
 
-        puts "#{@host} #{@port} - #{opts[:path]} #{opts[:value]}\n"
+        puts "#{@host} #{@port} - #{opts[:path]} #{opts[:value]}\n" if @verbose
 
     end
 
