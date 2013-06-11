@@ -9,9 +9,10 @@ def days_from_today(n)
 end
 
 args = Trollop::options do
-    opt :data, "data link names", :type => :string
-    opt :from,   "From (days)", :type => :int, :default => 30 
-    opt :to,     "To (days)",   :type => :int, :default => 1
+    opt :data,          "data link names",      :type => :string
+    opt :from,          "From (days)",          :type => :int, :default => 30 
+    opt :to,            "To (days)",            :type => :int, :default => 0
+    opt :granularity,   "Granularity",          :type => :string, :default => 'day'
 end
 
 report = Report.new().queueTrended(
@@ -21,6 +22,7 @@ report = Report.new().queueTrended(
                   :segment => "",
                   :metric => "event37",
                   :element_id => "evar37",
+                  :granularity => args[:granularity],
                   :evars => args[:data].split(",")
                 })
 

@@ -76,7 +76,7 @@ class Report < Omniture
     end
 
     # attempts to serialise a report to something the ganglia agent can read
-    def t_ganglia(id)
+    def to_ganglia(id)
         
         report = JSON.parse(self.getReport(id))
         
@@ -89,11 +89,16 @@ class Report < Omniture
            
             metrics.each_with_index.map { |metric, i|
                 {
-                    "group" => "frontend-omniture-kpis",
-                    "name" => [metric[:id], kpi["name"].gsub(/ /, '_')].join("_"),
-                    "type" => "counter",
                     "title" => kpi["name"],
-                    "count" => kpi["counts"][i]
+                    "breakdown" => kpi["breakdown"].map { |d|
+                        {
+                            :value => d['counts'].first,
+                            :time => Time.utc(d['year'], d['month'], d['day'], d['hour']) 
+                        }
+                    }.select { |d|
+                        six_hours_ago = (Time.now - (60 * 60 * 6))
+                        (six_hours_ago > d[:time])
+                    }.last
                 } 
            } 
         }.flatten

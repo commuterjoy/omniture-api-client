@@ -1,0 +1,17 @@
+#!/usr/bin/ruby 
+
+require 'lib/omniture'
+require 'lib/graphite'
+
+
+g = Graphite.new({ :api_key => '8664e458-9d62-4c8e-a55b-ad2f46d6e772', :host => 'carbon.hostedgraphite.com' })
+
+report_id = ARGV.first
+
+report = Report.new().to_ganglia(report_id)
+
+puts report.inspect
+
+report['metrics'].each { |metric|
+    g.log({ :path => [metric['title'].gsub(/:/,'-').downcase].join('.'), :value => metric['breakdown'][:value] })
+}
