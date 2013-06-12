@@ -86,22 +86,40 @@ class Report < Omniture
             }}
  
         kpis = report['report']['data'].map { |kpi|
-           
-            metrics.each_with_index.map { |metric, i|
-                {
-                    :title => kpi["name"],
-                    :breakdown => kpi["breakdown"].map { |d|
+
+                # overtime metrics
+                if kpi['breakdown']
+
+                    {
+                        :title => kpi["name"],
+                        :breakdown => kpi["breakdown"].map { |d|
+                            {
+                                :value => d['counts'].first,  # FIXME doesn't work with multiple metrics
+                                :time => Time.utc(d['year'], d['month'], d['day'], d['hour']) 
+                            }
+                        }.select { |d|
+                            (Time.now - (60 * 60 * hours) > d[:time])
+                        }.last
+                    }
+
+                # kpis
+                else
+                   
+                   metrics.each_with_index.map { |metric, i|
                         {
-                            :value => d['counts'].first,  # FIXME doesn't work with multiple metrics
-                            :time => Time.utc(d['year'], d['month'], d['day'], d['hour']) 
+                            :title => metric[:name],
+                            :breakdown => {
+                                :value => kpi['counts'][i],
+                                :time => Time.utc(kpi['year'], kpi['month'], kpi['day'], kpi['hour'])
+                            }
                         }
-                    }.select { |d|
-                        (Time.now - (60 * 60 * hours) > d[:time])
-                    }.last
-                } 
-           } 
+                   }.select { |d|
+                        (Time.now - (60 * 60 * hours) > d[:breakdown][:time])
+                   }
+
+                end
         }.flatten
- 
+
         { "metrics" => kpis }
         
     end

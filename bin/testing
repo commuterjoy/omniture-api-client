@@ -1,0 +1,38 @@
+#!/usr/bin/ruby 
+
+require 'lib/omniture'
+require 'lib/graphite'
+require 'trollop'
+require 'date'
+require 'json'
+
+CACHE = IO.read('reports/146895912')
+
+
+def log_to_graphite(report_id, args, r)
+
+    graphite = Graphite.new({
+            :host => args[:host],
+            :verbose => true
+        })
+
+    report = Report.new().to_ganglia(report_id, args[:buffer], r)
+
+    report['metrics'].each { |metric|
+        graphite.log({
+                :path => [args[:path].split('.'), 'omniture', 'v001', metric[:title].gsub(/[: ]/,'-').downcase].join('.'),
+                :value => metric[:breakdown][:value],
+                :time => metric[:breakdown][:time].to_i
+        })
+    }
+
+
+end
+
+# ---
+
+report = JSON.parse(CACHE)
+
+log_to_graphite('123', { :path => 'v001' }, report)
+
+

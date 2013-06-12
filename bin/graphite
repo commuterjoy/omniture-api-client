@@ -11,6 +11,7 @@ args = Trollop::options do
     opt :path,        "Prefix for all your metrics",                                             :type => :string
     opt :buffer,      "Number of hours buffer you want to wait for Omniture to report the data", :type => :int, :default => 6 
     opt :data,        "Data link names",                                                         :type => :string
+    opt :kpis,        "Log page views / visitors / visits",                                      :type => :boolean
     opt :from,        "From (days)",                                                             :type => :int, :default => 30 
     opt :to,          "To (days)",                                                               :type => :int, :default => 0
     opt :granularity, "Granularity",                                                             :type => :string, :default => 'day'
@@ -41,6 +42,19 @@ end
 
 # ---
 
+def generate_kpi_report(from, granularity)
+
+    Report.new().queueQueueOvertime(
+      {
+        :date => days_from_today(from),
+        :metrics => ['pageViews', 'visits', 'visitors'],
+        :granularity => granularity
+      })
+
+end
+
+# ---
+
 def log_to_graphite(report_id, args)
 
     graphite = Graphite.new({
@@ -50,9 +64,14 @@ def log_to_graphite(report_id, args)
 
     report = Report.new().to_ganglia(report_id, args[:buffer])
 
+    # modify the array 
+    if args[:kpis]
+        report['metrics'] = report['metrics'].pop(3)
+    end
+
     report['metrics'].each { |metric|
         graphite.log({
-                :path => [args[:path].split('.'), 'omniture', 'v001', metric[:title].gsub(/[:]/,'-').downcase].join('.'),
+                :path => [args[:path].split('.'), 'omniture', 'v001', metric[:title].gsub(/[ :]/,'-').downcase].join('.'),
                 :value => metric[:breakdown][:value],
                 :time => metric[:breakdown][:time].to_i
         })
@@ -73,9 +92,23 @@ end
 
 # ---
 
-report = generate_report(args[:from], args[:to], args[:granularity], args[:data].split(","))
 
-report_id = JSON.parse(report)['reportID']
+if args[:kpis]
+    report = generate_kpi_report(args[:from], args[:granularity])
+else
+    report = generate_report(args[:from], args[:to], args[:granularity], args[:data].split(","))
+
+end
+
+report_as_json = JSON.parse(report)
+
+unless report_as_json['statusMsg'] == 'Your report has been queued' 
+    puts report.inspect
+    raise "Report did not generate"
+    exit 1
+end
+
+report_id = report_as_json['reportID']
 
 puts "report requested ... #{report_id}"
 
@@ -87,5 +120,3 @@ end
 puts "report generated ... #{report_id}"
 
 log_to_graphite(report_id, args)
-
-
