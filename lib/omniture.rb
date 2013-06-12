@@ -76,7 +76,7 @@ class Report < Omniture
     end
 
     # extracts the 'latest' measurements from Omniture, as defined by the _n_ hours argument
-    def to_ganglia(id, hours = 6)
+    def to_ganglia(id, hours)
         
         report = JSON.parse(self.getReport(id))
         

@@ -13,10 +13,10 @@ class Graphite
     def log(opts)
         
         conn = TCPSocket.new @host, @port
-        conn.puts "#{@api_key}.#{opts[:path]} #{opts[:value]}\n"
+        conn.puts "#{opts[:path]} #{opts[:value]} #{opts[:time]}\n"
         conn.close
 
-        puts "#{@host} #{@port} - #{opts[:path]} #{opts[:value]}\n" if @verbose
+        puts "#{@host}:#{@port} - #{opts[:path]} #{opts[:value]} #{opts[:time]}\n" if @verbose
 
     end
 
