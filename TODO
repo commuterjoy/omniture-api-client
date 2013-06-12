@@ -1,3 +1,12 @@
-- Implement date range and granularity for all queries.
-- Translate the report in to plain english.
-- Provide an interface for Ganglia
+
+TODO 
+----
+
+- Send all Graphite data across in a batch (multi-line)
+
+DONE
+----
+
+- DONE Provide an interface for Graphite.
+- DONE Implement date range and granularity for all queries.
+
