@@ -3,24 +3,89 @@
 require 'lib/omniture'
 require 'lib/graphite'
 require 'trollop'
+require 'date'
+require 'json'
 
 args = Trollop::options do
-    opt :report,     "Report id",                                                               :type => :int
-    opt :host,       "Graphite host - Eg. graphite.guprod.gnl",                                 :type => :string
-    opt :path,       "Prefix for all your metrics",                                             :type => :string
-    opt :buffer,     "Number of hours buffer you want to wait for Omniture to report the data", :type => :int, :default => 6 
+    opt :host,        "Graphite host - Eg. graphite.guprod.gnl",                                 :type => :string
+    opt :path,        "Prefix for all your metrics",                                             :type => :string
+    opt :buffer,      "Number of hours buffer you want to wait for Omniture to report the data", :type => :int, :default => 6 
+    opt :data,        "Data link names",                                                         :type => :string
+    opt :from,        "From (days)",                                                             :type => :int, :default => 30 
+    opt :to,          "To (days)",                                                               :type => :int, :default => 0
+    opt :granularity, "Granularity",                                                             :type => :string, :default => 'day'
 end
 
-graphite = Graphite.new({
-        :host => args[:host],
-        :verbose => true
+# ---
+
+def days_from_today(n)
+    (Date.today - n).strftime('%Y-%m-%d') 
+end
+
+# ---
+
+def generate_report(from, to, granularity, evars)
+
+   Report.new().queueTrended(
+    {
+      :from => days_from_today(from),
+      :to => days_from_today(to),
+      :segment => "",
+      :metric => "event37",
+      :element_id => "evar37",
+      :granularity => granularity,
+      :evars => evars
     })
 
-report = Report.new().to_ganglia(args[:report])
+end
 
-report['metrics'].each { |metric|
-    graphite.log({
-            :path => [[:path].split('.'), 'omniture', metric[:title].gsub(/:/,'-').downcase].join('.'),
-            :value => metric[:breakdown][:value]
-    }, args[:buffer])
-}
+# ---
+
+def log_to_graphite(report_id, args)
+
+    graphite = Graphite.new({
+            :host => args[:host],
+            :verbose => true
+        })
+
+    report = Report.new().to_ganglia(report_id, args[:buffer])
+
+    report['metrics'].each { |metric|
+        graphite.log({
+                :path => [args[:path].split('.'), 'omniture', 'v001', metric[:title].gsub(/[:]/,'-').downcase].join('.'),
+                :value => metric[:breakdown][:value],
+                :time => metric[:breakdown][:time].to_i
+        })
+    }
+
+end
+
+# ---
+
+def has_report_finished(id)
+    
+    report = Report.new().getReportQueue()
+    JSON.parse(report).map { |item|
+        item['report_id'].to_i
+    }.include? id
+    
+end
+
+# ---
+
+report = generate_report(args[:from], args[:to], args[:granularity], args[:data].split(","))
+
+report_id = JSON.parse(report)['reportID']
+
+puts "report requested ... #{report_id}"
+
+loop do
+    break unless has_report_finished(report_id)
+    sleep 5
+end
+
+puts "report generated ... #{report_id}"
+
+log_to_graphite(report_id, args)
+
+
