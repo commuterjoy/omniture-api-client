@@ -21,7 +21,7 @@
 			}
 		],
 		"locale":"",
-		"segment_id":"<%= @opts[:segment] %>"
+		"segment_id":"<%= (@opts[:segment]) ? @opts[:segment] : ''  %>"
 	},
 	"validate":true
 }

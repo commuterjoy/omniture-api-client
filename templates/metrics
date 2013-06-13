@@ -8,7 +8,7 @@
 		],
 		"sortBy":"",
 		"locale":"",
-		"segment_id":""
+		"segment_id":"<%= @opts[:segment] %>"
 	},
 	"validate":true
 }
