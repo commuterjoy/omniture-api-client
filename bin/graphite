@@ -76,16 +76,23 @@ def log_to_graphite(report_id, args)
         path = [
             args[:path].split('.'),
             'omniture',
-            'v001',
-            metric[:title].gsub(/[ :]/,'-').downcase
+            'v003',
         ]
-        
+
+        if args[:data]
+            path.push(args[:data])
+        end
+
+        path.push(metric[:title].split("|").map{|m|m.gsub(/[\s]/,'')}.join('-').downcase)
+
         if args[:segment]
             path.push(args[:segment].gsub(/[ ], '-'/)) 
         end
 
+        puts "#{path.inspect}"
+
         graphite.log({
-                :path => [args[:path].split('.'), 'omniture', 'v001', metric[:title].gsub(/[ :]/,'-').downcase].join('.'),
+                :path => path.join('.'),
                 :value => metric[:breakdown][:value],
                 :time => metric[:breakdown][:time].to_i
         })
