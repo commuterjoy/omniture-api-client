@@ -48,12 +48,12 @@ def generate_kpi_report(from, granularity, segment)
         :date => days_from_today(from),
         :metrics => ['pageViews', 'visits', 'visitors', 'customersreturn'],
         :granularity => granularity,
-        :segment => segment,
+        :segment => segment
       })
 end
 
 # keys are of the form 'omniture.v003.social-twitter.metric.segment'
-def make_omniture_key(args)
+def make_omniture_key(metric, args)
     path = [
         args[:path].split('.'),
         'omniture',
@@ -79,7 +79,7 @@ def log_to_graphite(report_id, args)
     end
 
     report['metrics'].each { |metric|
-        path = make_omniture_key(args)
+        path = make_omniture_key(metric, args)
         graphite.log({
                 :path => path.join('.'),
                 :value => metric[:breakdown][:value],
