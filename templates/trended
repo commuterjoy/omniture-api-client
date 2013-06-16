@@ -14,7 +14,7 @@
 		"elements":[
 			{
 				"id":"<%= opts[:element_id] %>",
-				"search":{
+                "search":{
 					"type":"OR",
 					"keywords": [<%= @opts[:evars].map{|var|'"'+var+'"'}.join(",") %>]
 				}

@@ -17,20 +17,22 @@ args = Trollop::options do
     opt :granularity, "Granularity",                                                             :type => :string, :default => 'day'
     opt :segment,     "Segment",                                                                 :type => :string 
     opt :key,         "Key",                                                                     :type => :string 
+    opt :element,     "Element",                                                                 :type => :string 
+    opt :metric,      "Metric",                                                                  :type => :string 
 end
 
 def days_from_today(n)
     (Date.today - n).strftime('%Y-%m-%d') 
 end
 
-def generate_report(from, to, granularity, evars, segment)
+def generate_report(from, to, granularity, evars, segment, metric = 'event37', element_id = 'evar37')
    Report.new().queueTrended(
     {
       :from => days_from_today(from),
       :to => days_from_today(to),
       :segment => segment,
-      :metric => "event37",
-      :element_id => "evar37",
+      :metric => metric,
+      :element_id => element_id,
       :granularity => granularity,
       :evars => evars
     })
@@ -60,7 +62,7 @@ def make_omniture_key(metric, args)
         'v003',
     ]
     path.push(args[:key]) if args[:key] 
-    path.push(metric[:title].split("|").map{|m|m.gsub(/[\s]/,'')}.join('-').downcase)
+    path.push(metric[:title].split("|").map{|m|m.gsub(/[\s.]/,'')}.join('-').downcase)
     path.push(args[:segment].gsub(/[ ], '-'/)) if args[:segment]
     path
 end
@@ -95,7 +97,7 @@ end
 if args[:kpis]
     report = generate_kpi_report(args[:from], args[:granularity], args[:segment])
 else
-    report = generate_report(args[:from], args[:to], args[:granularity], args[:data].split(","), args[:segment])
+    report = generate_report(args[:from], args[:to], args[:granularity], args[:data].split(","), args[:segment], args[:metric], args[:element])
 end
 
 report_as_json = JSON.parse(report)

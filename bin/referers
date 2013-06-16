@@ -1,0 +1,26 @@
+#!/usr/bin/ruby
+
+require 'lib/omniture'
+require 'date'
+require 'trollop'
+
+def days_from_today(n)
+    (Date.today - n).strftime('%Y-%m-%d') 
+end
+
+args = Trollop::options do
+    opt :from,   "From (days)", :type => :int, :default => 1
+    opt :to,     "To (days)",   :type => :int, :default => 0
+end
+
+r = Report.new().queueTrended(
+                {
+                  :from => days_from_today(args[:from]),
+                  :to => days_from_today(args[:to]),
+                  :evars => [""],
+                  :metric => "pageViews",
+                  :element_id => "referringdomain",
+                  :granularity => "hour"
+                })
+puts r
+

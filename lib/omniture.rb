@@ -55,7 +55,9 @@ class Report < Omniture
         @opts = self.default_options().merge(opts)
         puts @opts.inspect
         template = ERB.new File.new("templates/" + template).read, nil, "%"
-        template.result(binding)
+        a = template.result(binding)
+        puts a
+        a
     end
 
     def queueQueueOvertime(opts)
