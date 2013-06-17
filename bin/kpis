@@ -5,9 +5,7 @@ require 'date'
 
 yesterday = (Date.today-1).strftime('%Y-%m-%d') 
 
-opts = {
+puts Report.new().queueQueueOvertime({
          :date => yesterday,
-         :metrics => ['pageViews', 'visits', 'visitors', 'averageTimeSpentOnSite', 'averageVisitDepth', 'visitorsNew']
-       }
-
-puts Report.new().queueQueueOvertime(opts)
+         :metrics => ['pageViews', 'visits', 'visitors']
+        })
