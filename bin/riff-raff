@@ -1,0 +1,28 @@
+#!/usr/bin/ruby 
+
+require 'rubygems'
+require 'lib/graphite'
+require 'json'
+require 'httparty'
+require 'trollop'
+
+args = Trollop::options do
+    opt :host,     "Graphite host - Eg. graphite.guprod.gnl",                                 :type => :string
+    opt :path,     "Prefix for all your metrics",                                             :type => :string
+    opt :project,  "RiffRaff project name",                                                   :type => :string, :default => 'frontend::' 
+    opt :api,      "RiffRaff API key",                                                        :type => :string 
+    opt :stage,    "RiffRaff stage",                                                          :type => :string, :default => 'PROD' 
+end
+
+def get_deployments(opts)
+    list_of_deploys = 'https://dev.riffraff.gudev.gnl/api/history?status=Completed&pageSize=50'
+    response = HTTParty.get(list_of_deploys, :query => { 'projectName' => opts[:project], 'key' => opts[:api], 'stage' => opts[:stage] })
+    JSON.parse(response.body)['response']['results']
+end
+
+get_deployments(args).each { |deployment|
+    path = [ args[:path], 'riffraff', deployment['projectName'].split("::") ].flatten
+    g = Graphite.new({ :host => args[:host], :verbose => true })
+    g.log({ :path => path.join('.'), :value => 1, :time => (deployment['time'].to_i / 1000) })
+}
+
