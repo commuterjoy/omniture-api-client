@@ -19,13 +19,14 @@ args = Trollop::options do
     opt :key,         "Key",                                                                     :type => :string 
     opt :element,     "Element",                                                                 :type => :string 
     opt :metric,      "Metric",                                                                  :type => :string 
+    opt :suite,       "Report suite id",                                                         :type => :string, :default => 'guardiangu-frontend'
 end
 
 def days_from_today(n)
     (Date.today - n).strftime('%Y-%m-%d') 
 end
 
-def generate_report(from, to, granularity, evars, segment, metric = 'event37', element_id = 'evar37')
+def generate_report(from, to, granularity, evars, segment, metric = 'event37', element_id = 'evar37', suite = 'foo')
    Report.new().queueTrended(
     {
       :from => days_from_today(from),
@@ -34,7 +35,8 @@ def generate_report(from, to, granularity, evars, segment, metric = 'event37', e
       :metric => metric,
       :element_id => element_id,
       :granularity => granularity,
-      :evars => evars
+      :evars => evars,
+      :report_suite => suite
     })
 end
 
@@ -44,13 +46,14 @@ def has_report_finished(id)
     }.include? id
 end
 
-def generate_kpi_report(from, granularity, segment)
+def generate_kpi_report(from, granularity, segment, suite)
     Report.new().queueQueueOvertime(
       {
         :date => days_from_today(from),
         :metrics => ['pageViews', 'visits', 'visitors', 'customersreturn'],
         :granularity => granularity,
-        :segment => segment
+        :segment => segment,
+        :report_suite => suite
       })
 end
 
@@ -95,9 +98,9 @@ end
 
 
 if args[:kpis]
-    report = generate_kpi_report(args[:from], args[:granularity], args[:segment])
+    report = generate_kpi_report(args[:from], args[:granularity], args[:segment], args[:suite])
 else
-    report = generate_report(args[:from], args[:to], args[:granularity], args[:data].split(","), args[:segment], args[:metric], args[:element])
+    report = generate_report(args[:from], args[:to], args[:granularity], args[:data].split(","), args[:segment], args[:metric], args[:element], args[:suite])
 end
 
 report_as_json = JSON.parse(report)

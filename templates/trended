@@ -1,6 +1,6 @@
 {
 	"reportDescription":{
-		"reportSuiteID":"guardiangu-frontend",
+		"reportSuiteID":"<%= @opts[:report_suite] %>",
 		"date":"",
 		"dateFrom":"<%= @opts[:from] %>",
 		"dateTo":"<%= @opts[:to] %>",
