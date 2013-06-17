@@ -17,8 +17,8 @@ args = Trollop::options do
     opt :granularity, "Granularity",                                                             :type => :string, :default => 'day'
     opt :segment,     "Segment",                                                                 :type => :string 
     opt :key,         "Key",                                                                     :type => :string 
-    opt :element,     "Element",                                                                 :type => :string 
-    opt :metric,      "Metric",                                                                  :type => :string 
+    opt :element,     "Element",                                                                 :type => :string, :default => 'evar37'  
+    opt :metric,      "Metric",                                                                  :type => :string, :default => 'event37'
     opt :suite,       "Report suite id",                                                         :type => :string, :default => 'guardiangu-frontend'
 end
 
@@ -26,7 +26,7 @@ def days_from_today(n)
     (Date.today - n).strftime('%Y-%m-%d') 
 end
 
-def generate_report(from, to, granularity, evars, segment, metric = 'event37', element_id = 'evar37', suite = 'foo')
+def generate_report(from, to, granularity, evars, segment, metric, element_id, suite)
    Report.new().queueTrended(
     {
       :from => days_from_today(from),
@@ -50,7 +50,7 @@ def generate_kpi_report(from, granularity, segment, suite)
     Report.new().queueQueueOvertime(
       {
         :date => days_from_today(from),
-        :metrics => ['pageViews', 'visits', 'visitors', 'customersreturn'],
+        :metrics => ['pageViews', 'visits', 'visitors'],
         :granularity => granularity,
         :segment => segment,
         :report_suite => suite
